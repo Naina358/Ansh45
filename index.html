@@ -1,48 +1,585 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>I'm Sorry Sneha ❤️</title>
-<style>
-body{margin:0;font-family:Arial;background:linear-gradient(135deg,#ff7eb3,#ff758c);overflow:hidden;color:#fff}
-.hearts span,.petals span{position:absolute;animation:float 10s linear infinite;font-size:24px}
-.hearts span{color:#ffebf3}.petals span{color:#ffccd5}
-@keyframes float{from{transform:translateY(100vh)}to{transform:translateY(-10vh)}}
-.card{max-width:700px;margin:6vh auto;background:rgba(255,255,255,.18);backdrop-filter:blur(8px);padding:25px;border-radius:20px;text-align:center;box-shadow:0 0 20px rgba(0,0,0,.2)}
-h1{animation:glow 1.5s infinite alternate}
-@keyframes glow{from{text-shadow:0 0 8px #fff}to{text-shadow:0 0 22px #fff}}
-.gallery img{width:120px;height:120px;object-fit:cover;border-radius:12px;margin:6px;background:#fff}
-button{padding:12px 24px;border:none;border-radius:30px;margin:10px;font-size:18px;cursor:pointer}
-#yes{background:#28a745;color:#fff}#no{background:#dc3545;color:#fff;position:relative}
-#celebrate{display:none;font-size:28px}
-canvas{position:fixed;inset:0;pointer-events:none}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>I'm Sorry Sneha ❤️</title>
+    <style>
+        :root {
+            --primary-color: #ff4d6d;
+            --secondary-color: #ff758f;
+            --bg-dark: #0a0104;
+            --text-light: #fff0f3;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            user-select: none;
+        }
+
+        body {
+            background: linear-gradient(135deg, #0a0104 0%, #20010a 100%);
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            min-height: 100vh;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-light);
+        }
+
+        /* Ambient Canvas Animations */
+        #canvas-ambient {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        #canvas-fireworks {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 999;
+            pointer-events: none;
+            display: none;
+        }
+
+        /* Main Container */
+        .container {
+            position: relative;
+            z-index: 10;
+            width: 90%;
+            max-width: 500px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        /* Glowing Title */
+        .glowing-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #fff;
+            text-shadow: 0 0 10px var(--primary-color),
+                         0 0 20px var(--primary-color),
+                         0 0 40px var(--secondary-color);
+            margin-bottom: 20px;
+            animation: pulse 2s infinite alternate;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
+            100% { transform: scale(1.03); text-shadow: 0 0 15px var(--primary-color), 0 0 30px var(--secondary-color), 0 0 50px #ffb3c1; }
+        }
+
+        /* Envelope / Letter Opener Trigger */
+        .envelope-wrapper {
+            background: rgba(255, 255, 255, 0.05);
+            border: 2px solid rgba(255, 77, 109, 0.3);
+            border-radius: 20px;
+            padding: 30px 20px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
+            transition: all 0.5s ease;
+            cursor: pointer;
+        }
+
+        .envelope-wrapper:hover {
+            border-color: var(--primary-color);
+            box-shadow: 0 15px 40px rgba(255, 77, 109, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .heart-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            animation: beat 1.2s infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes beat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            40% { transform: scale(1.05); }
+            60% { transform: scale(1.15); }
+        }
+
+        .click-hint {
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            color: var(--secondary-color);
+            font-weight: 600;
+        }
+
+        /* Animated Apology Letter Window */
+        .letter-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 1, 4, 0.85);
+            z-index: 100;
+            backdrop-filter: blur(15px);
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .letter-modal.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .letter-content {
+            background: #fffdfa;
+            color: #2b1117;
+            width: 100%;
+            max-width: 450px;
+            max-height: 85vh;
+            overflow-y: auto;
+            border-radius: 25px;
+            padding: 30px 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+            position: relative;
+            transform: translateY(50px);
+            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-align: left;
+        }
+
+        .letter-modal.active .letter-content {
+            transform: translateY(0);
+        }
+
+        .letter-header {
+            font-size: 1.8rem;
+            color: #d90429;
+            font-family: 'Georgia', serif;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed #f7b2bd;
+            padding-bottom: 10px;
+            text-align: center;
+        }
+
+        .letter-text {
+            font-family: 'Georgia', serif;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            white-space: pre-line;
+            color: #3d1e25;
+        }
+
+        /* Photo Gallery inside Letter */
+        .photo-gallery {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .photo-frame {
+            background: #fff;
+            padding: 6px;
+            border: 1px solid #e5e5e5;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
+            transform: rotate(var(--rotation));
+            transition: transform 0.3s ease;
+            border-radius: 4px;
+        }
+
+        .photo-frame:hover {
+            transform: scale(1.08) rotate(0deg);
+            z-index: 5;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
+        }
+
+        .photo-frame img {
+            width: 100%;
+            height: 140px;
+            object-fit: cover;
+            display: block;
+            border-radius: 2px;
+        }
+
+        /* Interactive Buttons styling */
+        .btn-group {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin-top: 25px;
+            position: relative;
+            min-height: 60px;
+        }
+
+        .btn {
+            padding: 12px 28px;
+            font-size: 1rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            outline: none;
+        }
+
+        .btn-forgive {
+            background: linear-gradient(135deg, #2a9d8f, #e76f51);
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
+        }
+
+        .btn-forgive:hover {
+            transform: scale(1.05);
+            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.6);
+        }
+
+        .btn-reject {
+            background: #6c757d;
+            color: white;
+            position: absolute;
+            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 10;
+        }
+
+        /* Success screen overlays */
+        #success-screen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.9);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            padding: 20px;
+        }
+
+        #success-screen h2 {
+            font-size: 3rem;
+            color: #fff;
+            text-shadow: 0 0 20px #ff0055;
+            margin-bottom: 20px;
+            animation: beat 1s infinite;
+        }
+
+        #success-screen p {
+            font-size: 1.3rem;
+            color: #ffb3c1;
+        }
+
+        /* Music control floating button */
+        .music-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255,255,255,0.4);
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            cursor: pointer;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        /* Mobile specific adjustments */
+        @media (max-width: 480px) {
+            .glowing-title { font-size: 2rem; }
+            .letter-content { padding: 20px 15px; }
+            .photo-frame img { height: 110px; }
+            .btn { padding: 10px 22px; font-size: 0.95rem; }
+        }
+    </style>
 </head>
 <body>
-<div class="hearts"></div><div class="petals"></div>
-<div class="card">
-<h1>I'm Sorry, Sneha ❤️</h1>
-<p id="type"></p>
-<div class="gallery">
-<img src="https://via.placeholder.com/120?text=Photo+1">
-<img src="https://via.placeholder.com/120?text=Photo+2">
-<img src="https://via.placeholder.com/120?text=Photo+3">
-</div>
-<p><b>Dear Sneha,</b><br>I know I made mistakes and I'm truly sorry. I never wanted to hurt you. Please give me one chance to make things right. Your smile means everything to me. ❤️</p>
-<button onclick="forgive()" id="yes">Forgive Me ❤️</button>
-<button id="no" onmouseover="moveBtn()" ontouchstart="moveBtn()">Not Yet 😒</button>
-<h2 id="celebrate">🎉 Thank You, Sneha! ❤️</h2>
-</div>
-<canvas id="c"></canvas>
-<script>
-const msg="Every heartbeat reminds me of you. I'm sincerely sorry, Sneha. ❤️";
-let i=0;function t(){if(i<msg.length){type.textContent+=msg[i++];setTimeout(t,50)}};t();
-for(let j=0;j<25;j++){let s=document.createElement("span");s.textContent="❤️";s.style.left=Math.random()*100+"%";s.style.animationDuration=(6+Math.random()*6)+"s";document.querySelector(".hearts").appendChild(s);}
-for(let j=0;j<20;j++){let s=document.createElement("span");s.textContent="🌹";s.style.left=Math.random()*100+"%";s.style.animationDuration=(8+Math.random()*6)+"s";document.querySelector(".petals").appendChild(s);}
-function moveBtn(){let b=no;b.style.position="absolute";b.style.left=Math.random()*70+"%";b.style.top=Math.random()*70+"%";}
-function beep(){let a=new(window.AudioContext||window.webkitAudioContext)();let o=a.createOscillator(),g=a.createGain();o.type="sine";o.frequency.value=523;o.connect(g);g.connect(a.destination);g.gain.value=.05;o.start();o.frequency.exponentialRampToValueAtTime(659,a.currentTime+.2);o.frequency.exponentialRampToValueAtTime(784,a.currentTime+.5);o.stop(a.currentTime+.6);}
-function forgive(){beep();celebrate.style.display="block";fireworks();}
-function fireworks(){let c=document.getElementById("c"),x=c.getContext("2d");c.width=innerWidth;c.height=innerHeight;let p=[];for(let i=0;i<200;i++)p.push({x:c.width/2,y:c.height/2,vx:(Math.random()-.5)*8,vy:(Math.random()-.5)*8,l:80});let id=setInterval(()=>{x.clearRect(0,0,c.width,c.height);p.forEach(q=>{x.fillText("✨",q.x,q.y);q.x+=q.vx;q.y+=q.vy;q.l--;});p=p.filter(q=>q.l>0);if(!p.length){clearInterval(id);x.clearRect(0,0,c.width,c.height);}},30);}
-</script>
-</body></html>
+
+    <!-- Ambient Canvas for Hearts and Petals -->
+    <canvas id="canvas-ambient"></canvas>
+    <!-- Fireworks Canvas -->
+    <canvas id="canvas-fireworks"></canvas>
+
+    <!-- Main Entry UI -->
+    <div class="container" id="main-container">
+        <h1 class="glowing-title">Sorry, Sneha... 🥺</h1>
+        
+        <div class="envelope-wrapper" onclick="openLetter()">
+            <div class="heart-icon">❤️</div>
+            <p class="click-hint">TAP TO OPEN MY LETTER</p>
+        </div>
+    </div>
+
+    <!-- The Apology Letter Modal -->
+    <div class="letter-modal" id="letterModal">
+        <div class="letter-content">
+            <h2 class="letter-header">Dearest Sneha,</h2>
+            <p class="letter-text">I am incredibly sorry for messing up. You mean the absolute world to me, and seeing you upset is the last thing I ever want. 
+
+            Please forgive me for my mistake. I miss your smile, your laugh, and everything about us. Can we put this behind us and make things right? I promise to do better. ❤️</p>
+            
+            <!-- PHOTO PLACEHOLDERS -->
+            <!-- Replace 'photo1.jpg', 'photo2.jpg', etc. with your image file paths or URLs -->
+            <div class="photo-gallery">
+                <div class="photo-frame" style="--rotation: -4deg;">
+                    <img src="photo1.jpg" alt="Sneha 1" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400'">
+                </div>
+                <div class="photo-frame" style="--rotation: 3deg;">
+                    <img src="photo2.jpg" alt="Sneha 2" onerror="this.src='https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400'">
+                </div>
+                <div class="photo-frame" style="--rotation: -2deg;">
+                    <img src="photo3.jpg" alt="Sneha 3" onerror="this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400'">
+                </div>
+                <div class="photo-frame" style="--rotation: 5deg;">
+                    <img src="photo4.jpg" alt="Sneha 4" onerror="this.src='https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400'">
+                </div>
+            </div>
+
+            <!-- Interactivity System -->
+            <div class="btn-group">
+                <button class="btn btn-forgive" onclick="forgiveAccepted()">I Forgive You</button>
+                <button class="btn btn-reject" id="rejectBtn" onmouseover="moveRejectButton()" onclick="moveRejectButton()">Not Yet</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Celebration Screen Overlay -->
+    <div id="success-screen">
+        <h2>Yay! Thank You! 🥰</h2>
+        <p>You just made my entire world light up again!</p>
+    </div>
+
+    <!-- Audio Control Toggle -->
+    <div class="music-btn" onclick="toggleMusic()" id="musicToggle">🎵</div>
+
+    <script>
+        // --- Canvas Environment Setup (Floating Hearts & Falling Petals) ---
+        const ambientCanvas = document.getElementById('canvas-ambient');
+        const ctx = ambientCanvas.getContext('2d');
+        let elements = [];
+
+        function resizeCanvas() {
+            ambientCanvas.width = window.innerWidth;
+            ambientCanvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resizeCanvas);
+        resizeCanvas();
+
+        class AmbientElement {
+            constructor(type) {
+                this.type = type; // 'heart' or 'petal'
+                this.x = Math.random() * ambientCanvas.width;
+                this.y = type === 'heart' ? ambientCanvas.height + 20 : -20;
+                this.size = Math.random() * 12 + 8;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = type === 'heart' ? -(Math.random() * 1 + 0.5) : (Math.random() * 1 + 1);
+                this.opacity = Math.random() * 0.5 + 0.4;
+                this.rotation = Math.random() * Math.PI;
+                this.rotationSpeed = Math.random() * 0.02 - 0.01;
+            }
+
+            draw() {
+                ctx.save();
+                ctx.globalAlpha = this.opacity;
+                ctx.translate(this.x, this.y);
+                ctx.rotate(this.rotation);
+
+                if (this.type === 'heart') {
+                    ctx.fillStyle = '#ff4d6d';
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.bezierCurveTo(-this.size/2, -this.size/2, -this.size, 0, 0, this.size);
+                    ctx.bezierCurveTo(this.size, 0, this.size/2, -this.size/2, 0, 0);
+                    ctx.fill();
+                } else {
+                    // Rose Petal Look
+                    ctx.fillStyle = '#d90429';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, this.size, this.size/1.5, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                ctx.restore();
+            }
+
+            update() {
+                this.x += this.speedX + Math.sin(this.y / 30) * 0.3;
+                this.y += this.speedY;
+                this.rotation += this.rotationSpeed;
+
+                // Reset positions nicely
+                if (this.type === 'heart' && this.y < -20) {
+                    this.y = ambientCanvas.height + 20;
+                    this.x = Math.random() * ambientCanvas.width;
+                } else if (this.type === 'petal' && this.y > ambientCanvas.height + 20) {
+                    this.y = -20;
+                    this.x = Math.random() * ambientCanvas.width;
+                }
+            }
+        }
+
+        // Initialize 30 hearts and 30 rose petals
+        for(let i=0; i<30; i++) {
+            elements.push(new AmbientElement('heart'));
+            elements.push(new AmbientElement('petal'));
+        }
+
+        function animateAmbient() {
+            ctx.clearRect(0, 0, ambientCanvas.width, ambientCanvas.height);
+            elements.forEach(el => {
+                el.update();
+                el.draw();
+            });
+            requestAnimationFrame(animateAmbient);
+        }
+        animateAmbient();
+
+
+        // --- Procedural Piano Melody Loop (Web Audio API) ---
+        let audioCtx = null;
+        let melodyInterval = null;
+        let isPlaying = false;
+
+        // Soft, emotional piano-like notes progression (A-minor/C-major vibe)
+        const notes = [
+            261.63, 329.63, 392.00, 523.25, // C4, E4, G4, C5
+            293.66, 349.23, 440.00, 587.33, // D4, F4, A4, D5
+            329.63, 392.00, 493.88, 659.25, // E4, G4, B4, E5
+            349.23, 440.00, 523.25, 698.46  // F4, A4, C5, F5
+        ];
+
+        function playPianoTone(freq, duration) {
+            if (!audioCtx) return;
+            
+            let osc = audioCtx.createOscillator();
+            let gainNode = audioCtx.createGain();
+            
+            // Triangle wave creates a softer, more music-box/piano feel
+            osc.type = 'triangle';
+            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+            
+            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
+            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+            
+            osc.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            
+            osc.start();
+            osc.stop(audioCtx.currentTime + duration);
+        }
+
+        function startMelody() {
+            if (isPlaying) return;
+            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            
+            isPlaying = true;
+            document.getElementById('musicToggle').innerText = '⏸️';
+            
+            let step = 0;
+            melodyInterval = setInterval(() => {
+                // Play simple ambient chord patterns
+                let currentNote = notes[step % notes.length];
+                if(step % 3 !== 0) { // adds variation/rests
+                    playPianoTone(currentNote, 1.8);
+                }
+                step++;
+            }, 600);
+        }
+
+        function toggleMusic() {
+            if (isPlaying) {
+                clearInterval(melodyInterval);
+                isPlaying = false;
+                document.getElementById('musicToggle').innerText = '🎵';
+            } else {
+                startMelody();
+            }
+        }
+
+
+        // --- Letter Interaction & Logic Flow ---
+        function openLetter() {
+            startMelody(); // Safe triggers audio context on user tap
+            const modal = document.getElementById('letterModal');
+            modal.classList.add('active');
+            
+            // Set initial position for Reject Button inside container limits safely
+            resetRejectButton();
+        }
+
+        function resetRejectButton() {
+            const btn = document.getElementById('rejectBtn');
+            btn.style.left = "65%";
+            btn.style.top = "12px";
+        }
+
+        function moveRejectButton() {
+            const btn = document.getElementById('rejectBtn');
+            const group = document.querySelector('.btn-group');
+            
+            // Stay within limits of the content container bounding box
+            const maxX = group.clientWidth - btn.clientWidth;
+            const maxY = 150; // allows it to break format and move upwards/downwards wildly
+
+            const randomX = Math.floor(Math.random() * maxX);
+            const randomY = Math.floor(Math.random() * maxY) - 50; 
+
+            btn.style.left = randomX + "px";
+            btn.style.top = randomY + "px";
+        }
+
+        function forgiveAccepted() {
+            // Hide open screens
+            document.getElementById('letterModal').classList.remove('active');
+            document.getElementById('main-container').style.display = 'none';
+            
+            // Trigger Fireworks celebration overlay
+            const fwCanvas = document.getElementById('canvas-fireworks');
+            fwCanvas.style.display = 'block';
+            initFireworks();
+            
+            document.getElementById('success-screen').style.display = 'flex';
+        }
+
+
+        // --- High-Performance Canvas Fireworks & Confetti Particle Engine ---
+        const fwCanvas = document.getElementById('canvas-fireworks');
+        const fwCtx = fwCanvas.getContext('2d');
+        let fwParticles = [];
+
+        function initFireworks() {
+            fwCanvas.width = window.innerWidth;
+            fwCanvas.height = window.innerHeight;
+            
+            // Loop explosion generations
+            setInterval(() => {
+                createExplosion(Math.random() * fwCanvas.width, Math.random() * (fwCanvas.height * 0.6));
+            }, 500);
+            
+            animateFireworks();
+        }
+
+        function createExplosion(x, y) {
+            const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff4d6d', '#9b5de5', '#00bbf9', '#f15bb5'];
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            for (let i = 0; i < 60; i++) {
+                fwParticles.push({
+                    x: x,
+                    y: y,
+                    dx: Math.cos(i) * (Math.random() * 6 + 2),
+   

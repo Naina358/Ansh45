@@ -1,585 +1,568 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>I'm Sorry Sneha ❤️</title>
-    <style>
-        :root {
-            --primary-color: #ff4d6d;
-            --secondary-color: #ff758f;
-            --bg-dark: #0a0104;
-            --text-light: #fff0f3;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            user-select: none;
-        }
+<title>❤️ I'm Sorry Sneha </title>
 
-        body {
-            background: linear-gradient(135deg, #0a0104 0%, #20010a 100%);
-            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-            min-height: 100vh;
-            overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: var(--text-light);
-        }
+<style>
 
-        /* Ambient Canvas Animations */
-        #canvas-ambient {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 1;
-            pointer-events: none;
-        }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,sans-serif;
+}
 
-        #canvas-fireworks {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: 999;
-            pointer-events: none;
-            display: none;
-        }
+body{
 
-        /* Main Container */
-        .container {
-            position: relative;
-            z-index: 10;
-            width: 90%;
-            max-width: 500px;
-            text-align: center;
-            padding: 20px;
-        }
+background:linear-gradient(135deg,#ff5f8f,#ff9ec4,#ffd1dc);
 
-        /* Glowing Title */
-        .glowing-title {
-            font-size: 2.5rem;
-            font-weight: 700;
-            color: #fff;
-            text-shadow: 0 0 10px var(--primary-color),
-                         0 0 20px var(--primary-color),
-                         0 0 40px var(--secondary-color);
-            margin-bottom: 20px;
-            animation: pulse 2s infinite alternate;
-        }
+overflow:hidden;
 
-        @keyframes pulse {
-            0% { transform: scale(1); text-shadow: 0 0 10px var(--primary-color), 0 0 20px var(--primary-color); }
-            100% { transform: scale(1.03); text-shadow: 0 0 15px var(--primary-color), 0 0 30px var(--secondary-color), 0 0 50px #ffb3c1; }
-        }
+height:100vh;
 
-        /* Envelope / Letter Opener Trigger */
-        .envelope-wrapper {
-            background: rgba(255, 255, 255, 0.05);
-            border: 2px solid rgba(255, 77, 109, 0.3);
-            border-radius: 20px;
-            padding: 30px 20px;
-            backdrop-filter: blur(10px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.5);
-            transition: all 0.5s ease;
-            cursor: pointer;
-        }
+display:flex;
 
-        .envelope-wrapper:hover {
-            border-color: var(--primary-color);
-            box-shadow: 0 15px 40px rgba(255, 77, 109, 0.2);
-            transform: translateY(-5px);
-        }
+justify-content:center;
 
-        .heart-icon {
-            font-size: 4rem;
-            color: var(--primary-color);
-            animation: beat 1.2s infinite;
-            margin-bottom: 15px;
-        }
+align-items:center;
 
-        @keyframes beat {
-            0%, 100% { transform: scale(1); }
-            25% { transform: scale(1.1); }
-            40% { transform: scale(1.05); }
-            60% { transform: scale(1.15); }
-        }
+}
 
-        .click-hint {
-            font-size: 1.1rem;
-            letter-spacing: 1px;
-            color: var(--secondary-color);
-            font-weight: 600;
-        }
+/* Floating Hearts */
 
-        /* Animated Apology Letter Window */
-        .letter-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(10, 1, 4, 0.85);
-            z-index: 100;
-            backdrop-filter: blur(15px);
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
+.heart{
 
-        .letter-modal.active {
-            display: flex;
-            opacity: 1;
-        }
+position:absolute;
 
-        .letter-content {
-            background: #fffdfa;
-            color: #2b1117;
-            width: 100%;
-            max-width: 450px;
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: 25px;
-            padding: 30px 25px;
-            box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-            position: relative;
-            transform: translateY(50px);
-            transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            text-align: left;
-        }
+font-size:25px;
 
-        .letter-modal.active .letter-content {
-            transform: translateY(0);
-        }
+color:white;
 
-        .letter-header {
-            font-size: 1.8rem;
-            color: #d90429;
-            font-family: 'Georgia', serif;
-            margin-bottom: 15px;
-            border-bottom: 2px dashed #f7b2bd;
-            padding-bottom: 10px;
-            text-align: center;
-        }
+animation:float 10s linear infinite;
 
-        .letter-text {
-            font-family: 'Georgia', serif;
-            font-size: 1.05rem;
-            line-height: 1.6;
-            margin-bottom: 20px;
-            white-space: pre-line;
-            color: #3d1e25;
-        }
+opacity:.7;
 
-        /* Photo Gallery inside Letter */
-        .photo-gallery {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin: 20px 0;
-        }
+}
 
-        .photo-frame {
-            background: #fff;
-            padding: 6px;
-            border: 1px solid #e5e5e5;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.15);
-            transform: rotate(var(--rotation));
-            transition: transform 0.3s ease;
-            border-radius: 4px;
-        }
+@keyframes float{
 
-        .photo-frame:hover {
-            transform: scale(1.08) rotate(0deg);
-            z-index: 5;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.25);
-        }
+0%{
 
-        .photo-frame img {
-            width: 100%;
-            height: 140px;
-            object-fit: cover;
-            display: block;
-            border-radius: 2px;
-        }
+transform:translateY(100vh);
 
-        /* Interactive Buttons styling */
-        .btn-group {
-            display: flex;
-            justify-content: space-around;
-            align-items: center;
-            margin-top: 25px;
-            position: relative;
-            min-height: 60px;
-        }
+}
 
-        .btn {
-            padding: 12px 28px;
-            font-size: 1rem;
-            font-weight: 700;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            outline: none;
-        }
+100%{
 
-        .btn-forgive {
-            background: linear-gradient(135deg, #2a9d8f, #e76f51);
-            background: var(--primary-color);
-            color: white;
-            box-shadow: 0 5px 15px rgba(255, 77, 109, 0.4);
-        }
+transform:translateY(-120vh);
 
-        .btn-forgive:hover {
-            transform: scale(1.05);
-            box-shadow: 0 8px 20px rgba(255, 77, 109, 0.6);
-        }
+}
 
-        .btn-reject {
-            background: #6c757d;
-            color: white;
-            position: absolute;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            z-index: 10;
-        }
+}
 
-        /* Success screen overlays */
-        #success-screen {
-            display: none;
-            position: fixed;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            text-align: center;
-            padding: 20px;
-        }
+/* Rose Petals */
 
-        #success-screen h2 {
-            font-size: 3rem;
-            color: #fff;
-            text-shadow: 0 0 20px #ff0055;
-            margin-bottom: 20px;
-            animation: beat 1s infinite;
-        }
+.petal{
 
-        #success-screen p {
-            font-size: 1.3rem;
-            color: #ffb3c1;
-        }
+position:absolute;
 
-        /* Music control floating button */
-        .music-btn {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255,255,255,0.4);
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            cursor: pointer;
-            z-index: 1000;
-            backdrop-filter: blur(5px);
-        }
+font-size:22px;
 
-        /* Mobile specific adjustments */
-        @media (max-width: 480px) {
-            .glowing-title { font-size: 2rem; }
-            .letter-content { padding: 20px 15px; }
-            .photo-frame img { height: 110px; }
-            .btn { padding: 10px 22px; font-size: 0.95rem; }
-        }
-    </style>
+animation:petal 12s linear infinite;
+
+}
+
+@keyframes petal{
+
+0%{
+
+transform:translateY(-100px) rotate(0deg);
+
+}
+
+100%{
+
+transform:translateY(120vh) rotate(360deg);
+
+}
+
+}
+
+/* Main Card */
+
+.card{
+
+width:90%;
+
+max-width:800px;
+
+background:rgba(255,255,255,.15);
+
+backdrop-filter:blur(15px);
+
+border-radius:25px;
+
+padding:25px;
+
+text-align:center;
+
+box-shadow:0 0 25px rgba(255,255,255,.4);
+
+color:white;
+
+animation:zoom 1.5s;
+
+z-index:5;
+
+}
+
+@keyframes zoom{
+
+from{
+
+transform:scale(.4);
+
+opacity:0;
+
+}
+
+to{
+
+transform:scale(1);
+
+opacity:1;
+
+}
+
+}
+
+h1{
+
+font-size:42px;
+
+margin-bottom:10px;
+
+text-shadow:0 0 20px white;
+
+animation:glow 2s infinite alternate;
+
+}
+
+@keyframes glow{
+
+from{
+
+text-shadow:0 0 10px white;
+
+}
+
+to{
+
+text-shadow:0 0 30px white;
+
+}
+
+}
+
+h2{
+
+margin-bottom:20px;
+
+}
+
+#typing{
+
+font-size:18px;
+
+line-height:30px;
+
+min-height:160px;
+
+margin-top:20px;
+
+}
+
+.gallery{
+
+display:flex;
+
+justify-content:center;
+
+flex-wrap:wrap;
+
+gap:12px;
+
+margin:20px 0;
+
+}
+
+.gallery img{
+
+width:180px;
+
+height:180px;
+
+object-fit:cover;
+
+border-radius:18px;
+
+border:4px solid white;
+
+box-shadow:0 0 20px pink;
+
+transition:.4s;
+
+}
+
+.gallery img:hover{
+
+transform:scale(1.08);
+
+}
+
+button{
+
+padding:15px 35px;
+
+font-size:18px;
+
+border:none;
+
+border-radius:40px;
+
+cursor:pointer;
+
+margin:15px;
+
+transition:.4s;
+
+}
+
+#yes{
+
+background:#ff0066;
+
+color:white;
+
+}
+
+#yes:hover{
+
+background:#ff3385;
+
+}
+
+#no{
+
+background:white;
+
+color:#ff0066;
+
+position:relative;
+
+}
+
+#message{
+
+display:none;
+
+margin-top:20px;
+
+font-size:28px;
+
+font-weight:bold;
+
+color:white;
+
+text-shadow:0 0 20px yellow;
+
+}
+
+canvas{
+
+position:fixed;
+
+top:0;
+
+left:0;
+
+pointer-events:none;
+
+}
+
+</style>
+
 </head>
+
 <body>
 
-    <!-- Ambient Canvas for Hearts and Petals -->
-    <canvas id="canvas-ambient"></canvas>
-    <!-- Fireworks Canvas -->
-    <canvas id="canvas-fireworks"></canvas>
+<canvas id="canvas"></canvas>
 
-    <!-- Main Entry UI -->
-    <div class="container" id="main-container">
-        <h1 class="glowing-title">Sorry, Sneha... 🥺</h1>
-        
-        <div class="envelope-wrapper" onclick="openLetter()">
-            <div class="heart-icon">❤️</div>
-            <p class="click-hint">TAP TO OPEN MY LETTER</p>
-        </div>
-    </div>
+<div class="card">
 
-    <!-- The Apology Letter Modal -->
-    <div class="letter-modal" id="letterModal">
-        <div class="letter-content">
-            <h2 class="letter-header">Dearest Sneha,</h2>
-            <p class="letter-text">I am incredibly sorry for messing up. You mean the absolute world to me, and seeing you upset is the last thing I ever want. 
+<h1>❤️ I'm Sorry Sneha ❤️</h1>
 
-            Please forgive me for my mistake. I miss your smile, your laugh, and everything about us. Can we put this behind us and make things right? I promise to do better. ❤️</p>
-            
-            <!-- PHOTO PLACEHOLDERS -->
-            <!-- Replace 'photo1.jpg', 'photo2.jpg', etc. with your image file paths or URLs -->
-            <div class="photo-gallery">
-                <div class="photo-frame" style="--rotation: -4deg;">
-                    <img src="photo1.jpg" alt="Sneha 1" onerror="this.src='https://images.unsplash.com/photo-1518199266791-5375a83190b7?w=400'">
-                </div>
-                <div class="photo-frame" style="--rotation: 3deg;">
-                    <img src="photo2.jpg" alt="Sneha 2" onerror="this.src='https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?w=400'">
-                </div>
-                <div class="photo-frame" style="--rotation: -2deg;">
-                    <img src="photo3.jpg" alt="Sneha 3" onerror="this.src='https://images.unsplash.com/photo-1494790108377-be9c29b29330?w=400'">
-                </div>
-                <div class="photo-frame" style="--rotation: 5deg;">
-                    <img src="photo4.jpg" alt="Sneha 4" onerror="this.src='https://images.unsplash.com/photo-1529626455594-4ff0802cfb7e?w=400'">
-                </div>
-            </div>
+<h2>Will You Please Forgive Me?</h2>
 
-            <!-- Interactivity System -->
-            <div class="btn-group">
-                <button class="btn btn-forgive" onclick="forgiveAccepted()">I Forgive You</button>
-                <button class="btn btn-reject" id="rejectBtn" onmouseover="moveRejectButton()" onclick="moveRejectButton()">Not Yet</button>
-            </div>
-        </div>
-    </div>
+<div class="gallery">
 
-    <!-- Celebration Screen Overlay -->
-    <div id="success-screen">
-        <h2>Yay! Thank You! 🥰</h2>
-        <p>You just made my entire world light up again!</p>
-    </div>
+<!-- Replace these with your own photo filenames -->
+<img src="photo1.jpg">
+<img src="photo2.jpg">
+<img src="photo3.jpg">
 
-    <!-- Audio Control Toggle -->
-    <div class="music-btn" onclick="toggleMusic()" id="musicToggle">🎵</div>
+</div>
 
-    <script>
-        // --- Canvas Environment Setup (Floating Hearts & Falling Petals) ---
-        const ambientCanvas = document.getElementById('canvas-ambient');
-        const ctx = ambientCanvas.getContext('2d');
-        let elements = [];
+<p id="typing"></p>
 
-        function resizeCanvas() {
-            ambientCanvas.width = window.innerWidth;
-            ambientCanvas.height = window.innerHeight;
-        }
-        window.addEventListener('resize', resizeCanvas);
-        resizeCanvas();
+<button id="yes" onclick="forgive()">Forgive Me ❤️</button>
 
-        class AmbientElement {
-            constructor(type) {
-                this.type = type; // 'heart' or 'petal'
-                this.x = Math.random() * ambientCanvas.width;
-                this.y = type === 'heart' ? ambientCanvas.height + 20 : -20;
-                this.size = Math.random() * 12 + 8;
-                this.speedX = Math.random() * 1 - 0.5;
-                this.speedY = type === 'heart' ? -(Math.random() * 1 + 0.5) : (Math.random() * 1 + 1);
-                this.opacity = Math.random() * 0.5 + 0.4;
-                this.rotation = Math.random() * Math.PI;
-                this.rotationSpeed = Math.random() * 0.02 - 0.01;
-            }
+<button id="no" onmouseover="moveButton()" ontouchstart="moveButton()">
 
-            draw() {
-                ctx.save();
-                ctx.globalAlpha = this.opacity;
-                ctx.translate(this.x, this.y);
-                ctx.rotate(this.rotation);
+Not Yet 😒
 
-                if (this.type === 'heart') {
-                    ctx.fillStyle = '#ff4d6d';
-                    ctx.beginPath();
-                    ctx.moveTo(0, 0);
-                    ctx.bezierCurveTo(-this.size/2, -this.size/2, -this.size, 0, 0, this.size);
-                    ctx.bezierCurveTo(this.size, 0, this.size/2, -this.size/2, 0, 0);
-                    ctx.fill();
-                } else {
-                    // Rose Petal Look
-                    ctx.fillStyle = '#d90429';
-                    ctx.beginPath();
-                    ctx.ellipse(0, 0, this.size, this.size/1.5, 0, 0, Math.PI * 2);
-                    ctx.fill();
-                }
-                ctx.restore();
-            }
+</button>
 
-            update() {
-                this.x += this.speedX + Math.sin(this.y / 30) * 0.3;
-                this.y += this.speedY;
-                this.rotation += this.rotationSpeed;
+<div id="message">
 
-                // Reset positions nicely
-                if (this.type === 'heart' && this.y < -20) {
-                    this.y = ambientCanvas.height + 20;
-                    this.x = Math.random() * ambientCanvas.width;
-                } else if (this.type === 'petal' && this.y > ambientCanvas.height + 20) {
-                    this.y = -20;
-                    this.x = Math.random() * ambientCanvas.width;
-                }
-            }
-        }
+🎉 Thank You Sneha ❤️<br>
 
-        // Initialize 30 hearts and 30 rose petals
-        for(let i=0; i<30; i++) {
-            elements.push(new AmbientElement('heart'));
-            elements.push(new AmbientElement('petal'));
-        }
+You made me the happiest person.<br>
 
-        function animateAmbient() {
-            ctx.clearRect(0, 0, ambientCanvas.width, ambientCanvas.height);
-            elements.forEach(el => {
-                el.update();
-                el.draw();
-            });
-            requestAnimationFrame(animateAmbient);
-        }
-        animateAmbient();
+I promise to never hurt you again.
 
+</div>
 
-        // --- Procedural Piano Melody Loop (Web Audio API) ---
-        let audioCtx = null;
-        let melodyInterval = null;
-        let isPlaying = false;
+</div>
 
-        // Soft, emotional piano-like notes progression (A-minor/C-major vibe)
-        const notes = [
-            261.63, 329.63, 392.00, 523.25, // C4, E4, G4, C5
-            293.66, 349.23, 440.00, 587.33, // D4, F4, A4, D5
-            329.63, 392.00, 493.88, 659.25, // E4, G4, B4, E5
-            349.23, 440.00, 523.25, 698.46  // F4, A4, C5, F5
-        ];
+<script>
 
-        function playPianoTone(freq, duration) {
-            if (!audioCtx) return;
-            
-            let osc = audioCtx.createOscillator();
-            let gainNode = audioCtx.createGain();
-            
-            // Triangle wave creates a softer, more music-box/piano feel
-            osc.type = 'triangle';
-            osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
-            
-            gainNode.gain.setValueAtTime(0.08, audioCtx.currentTime);
-            gainNode.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-            
-            osc.connect(gainNode);
-            gainNode.connect(audioCtx.destination);
-            
-            osc.start();
-            osc.stop(audioCtx.currentTime + duration);
-        }
+const letter=`Dear Sneha ❤️,
 
-        function startMelody() {
-            if (isPlaying) return;
-            if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-            
-            isPlaying = true;
-            document.getElementById('musicToggle').innerText = '⏸️';
-            
-            let step = 0;
-            melodyInterval = setInterval(() => {
-                // Play simple ambient chord patterns
-                let currentNote = notes[step % notes.length];
-                if(step % 3 !== 0) { // adds variation/rests
-                    playPianoTone(currentNote, 1.8);
-                }
-                step++;
-            }, 600);
-        }
+I know I made mistakes.
 
-        function toggleMusic() {
-            if (isPlaying) {
-                clearInterval(melodyInterval);
-                isPlaying = false;
-                document.getElementById('musicToggle').innerText = '🎵';
-            } else {
-                startMelody();
-            }
-        }
+I never wanted to hurt you.
 
+Every day without your smile feels incomplete.
 
-        // --- Letter Interaction & Logic Flow ---
-        function openLetter() {
-            startMelody(); // Safe triggers audio context on user tap
-            const modal = document.getElementById('letterModal');
-            modal.classList.add('active');
-            
-            // Set initial position for Reject Button inside container limits safely
-            resetRejectButton();
-        }
+You're very precious to me.
 
-        function resetRejectButton() {
-            const btn = document.getElementById('rejectBtn');
-            btn.style.left = "65%";
-            btn.style.top = "12px";
-        }
+Please forgive me.
 
-        function moveRejectButton() {
-            const btn = document.getElementById('rejectBtn');
-            const group = document.querySelector('.btn-group');
-            
-            // Stay within limits of the content container bounding box
-            const maxX = group.clientWidth - btn.clientWidth;
-            const maxY = 150; // allows it to break format and move upwards/downwards wildly
+I promise to become a better person and always respect your feelings.
 
-            const randomX = Math.floor(Math.random() * maxX);
-            const randomY = Math.floor(Math.random() * maxY) - 50; 
+Thank you for being such a beautiful part of my life.
 
-            btn.style.left = randomX + "px";
-            btn.style.top = randomY + "px";
-        }
+❤️ Forever Yours,
+Ansh ❤️`;
 
-        function forgiveAccepted() {
-            // Hide open screens
-            document.getElementById('letterModal').classList.remove('active');
-            document.getElementById('main-container').style.display = 'none';
-            
-            // Trigger Fireworks celebration overlay
-            const fwCanvas = document.getElementById('canvas-fireworks');
-            fwCanvas.style.display = 'block';
-            initFireworks();
-            
-            document.getElementById('success-screen').style.display = 'flex';
-        }
+let i=0;
 
+function type(){
 
-        // --- High-Performance Canvas Fireworks & Confetti Particle Engine ---
-        const fwCanvas = document.getElementById('canvas-fireworks');
-        const fwCtx = fwCanvas.getContext('2d');
-        let fwParticles = [];
+if(i<letter.length){
 
-        function initFireworks() {
-            fwCanvas.width = window.innerWidth;
-            fwCanvas.height = window.innerHeight;
-            
-            // Loop explosion generations
-            setInterval(() => {
-                createExplosion(Math.random() * fwCanvas.width, Math.random() * (fwCanvas.height * 0.6));
-            }, 500);
-            
-            animateFireworks();
-        }
+document.getElementById("typing").innerHTML+=letter.charAt(i);
 
-        function createExplosion(x, y) {
-            const colors = ['#ff0055', '#00ffcc', '#ffcc00', '#ff4d6d', '#9b5de5', '#00bbf9', '#f15bb5'];
-            const color = colors[Math.floor(Math.random() * colors.length)];
-            for (let i = 0; i < 60; i++) {
-                fwParticles.push({
-                    x: x,
-                    y: y,
-                    dx: Math.cos(i) * (Math.random() * 6 + 2),
-   
+i++;
+
+setTimeout(type,40);
+
+}
+
+}
+
+type();/* ---------- Floating Hearts ---------- */
+
+for(let i=0;i<30;i++){
+
+let h=document.createElement("div");
+
+h.className="heart";
+
+h.innerHTML="❤️";
+
+h.style.left=Math.random()*100+"vw";
+
+h.style.animationDuration=(6+Math.random()*6)+"s";
+
+h.style.fontSize=(15+Math.random()*25)+"px";
+
+document.body.appendChild(h);
+
+}
+
+/* ---------- Rose Petals ---------- */
+
+for(let i=0;i<25;i++){
+
+let p=document.createElement("div");
+
+p.className="petal";
+
+p.innerHTML="🌹";
+
+p.style.left=Math.random()*100+"vw";
+
+p.style.animationDuration=(7+Math.random()*8)+"s";
+
+document.body.appendChild(p);
+
+}
+
+/* ---------- Run Away Button ---------- */
+
+function moveButton(){
+
+let btn=document.getElementById("no");
+
+btn.style.position="absolute";
+
+btn.style.left=Math.random()*70+"%";
+
+btn.style.top=Math.random()*70+"%";
+
+}
+
+/* ---------- Simple Romantic Tune ---------- */
+
+let audioContext;
+
+function playTune(){
+
+if(audioContext)return;
+
+audioContext=new(window.AudioContext||window.webkitAudioContext)();
+
+const notes=[523,659,784,659,523,494,523,659];
+
+let time=audioContext.currentTime;
+
+notes.forEach(freq=>{
+
+let osc=audioContext.createOscillator();
+
+let gain=audioContext.createGain();
+
+osc.type="sine";
+
+osc.frequency.value=freq;
+
+gain.gain.value=0.04;
+
+osc.connect(gain);
+
+gain.connect(audioContext.destination);
+
+osc.start(time);
+
+osc.stop(time+0.35);
+
+time+=0.35;
+
+});
+
+}
+
+/* ---------- Fireworks ---------- */
+
+const canvas=document.getElementById("canvas");
+
+const ctx=canvas.getContext("2d");
+
+canvas.width=window.innerWidth;
+
+canvas.height=window.innerHeight;
+
+let particles=[];
+
+function fireworks(){
+
+for(let i=0;i<250;i++){
+
+particles.push({
+
+x:canvas.width/2,
+
+y:canvas.height/2,
+
+vx:(Math.random()-0.5)*12,
+
+vy:(Math.random()-0.5)*12,
+
+life:100,
+
+emoji:Math.random()>0.5?"✨":"❤️"
+
+});
+
+}
+
+animate();
+
+}
+
+function animate(){
+
+ctx.clearRect(0,0,canvas.width,canvas.height);
+
+particles.forEach((p,index)=>{
+
+ctx.font="22px Arial";
+
+ctx.fillText(p.emoji,p.x,p.y);
+
+p.x+=p.vx;
+
+p.y+=p.vy;
+
+p.vy+=0.05;
+
+p.life--;
+
+if(p.life<=0){
+
+particles.splice(index,1);
+
+}
+
+});
+
+if(particles.length>0){
+
+requestAnimationFrame(animate);
+
+}
+
+}
+
+/* ---------- Forgive Button ---------- */
+
+function forgive(){
+
+document.getElementById("message").style.display="block";
+
+playTune();
+
+fireworks();
+
+}
+
+/* ---------- Resize ---------- */
+
+window.onresize=function(){
+
+canvas.width=window.innerWidth;
+
+canvas.height=window.innerHeight;
+
+}
+
+</script>
+
+</body>
+
+</html>

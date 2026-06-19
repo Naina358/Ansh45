@@ -3,11 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>❤️ I'm Sorry Sneha </title>
+<title>I'm Sorry Sneha ❤️</title>
 
 <style>
-
 *{
 margin:0;
 padding:0;
@@ -16,36 +14,111 @@ font-family:Arial,sans-serif;
 }
 
 body{
-
-background:linear-gradient(135deg,#ff5f8f,#ff9ec4,#ffd1dc);
-
-overflow:hidden;
-
 height:100vh;
-
+overflow:hidden;
 display:flex;
-
 justify-content:center;
-
 align-items:center;
-
+background:linear-gradient(135deg,#ff6fa5,#ffb6c1,#ffd6e8);
 }
 
-/* Floating Hearts */
-
-.heart{
-
-position:absolute;
-
-font-size:25px;
-
+.card{
+position:relative;
+width:90%;
+max-width:800px;
+padding:30px;
+text-align:center;
+border-radius:25px;
+background:rgba(255,255,255,.18);
+backdrop-filter:blur(10px);
+box-shadow:0 0 30px rgba(255,255,255,.4);
+z-index:10;
 color:white;
+}
 
-animation:float 10s linear infinite;
+h1{
+font-size:42px;
+text-shadow:0 0 20px white;
+animation:glow 2s infinite alternate;
+}
 
-opacity:.7;
+@keyframes glow{
+from{text-shadow:0 0 10px white;}
+to{text-shadow:0 0 25px white;}
+}
+
+h2{
+margin-top:10px;
+margin-bottom:20px;
+}
+
+#typing{
+font-size:18px;
+line-height:30px;
+min-height:170px;
+margin:20px 0;
+}
+
+button{
+padding:15px 30px;
+font-size:18px;
+border:none;
+border-radius:50px;
+cursor:pointer;
+margin:10px;
+transition:.4s;
+}
+
+#yes{
+background:#ff0066;
+color:white;
+}
+
+#yes:hover{
+transform:scale(1.1);
+}
+
+#no{
+background:white;
+color:#ff0066;
+position:relative;
+}
+
+#speaker{
+position:fixed;
+bottom:25px;
+left:50%;
+transform:translateX(-50%);
+width:75px;
+height:75px;
+border-radius:50%;
+  /* -------- Floating Hearts -------- */
+
+for(let j=0;j<35;j++){
+
+let h=document.createElement("div");
+
+h.className="heart";
+
+h.innerHTML="❤️";
+
+h.style.left=Math.random()*100+"vw";
+
+h.style.top=Math.random()*100+"vh";
+
+h.style.fontSize=(15+Math.random()*25)+"px";
+
+h.style.animation=`float ${5+Math.random()*6}s linear infinite`;
+
+document.body.appendChild(h);
 
 }
+
+/* Heart Animation */
+
+const style=document.createElement("style");
+
+style.innerHTML=`
 
 @keyframes float{
 
@@ -53,33 +126,31 @@ opacity:.7;
 
 transform:translateY(100vh);
 
+opacity:0;
+
+}
+
+20%{
+
+opacity:1;
+
 }
 
 100%{
 
 transform:translateY(-120vh);
 
-}
+opacity:0;
 
 }
 
-/* Rose Petals */
-
-.petal{
-
-position:absolute;
-
-font-size:22px;
-
-animation:petal 12s linear infinite;
-
 }
 
-@keyframes petal{
+@keyframes petals{
 
 0%{
 
-transform:translateY(-100px) rotate(0deg);
+transform:translateY(-10vh) rotate(0deg);
 
 }
 
@@ -91,313 +162,13 @@ transform:translateY(120vh) rotate(360deg);
 
 }
 
-/* Main Card */
+`;
 
-.card{
+document.head.appendChild(style);
 
-width:90%;
+/* -------- Rose Petals -------- */
 
-max-width:800px;
-
-background:rgba(255,255,255,.15);
-
-backdrop-filter:blur(15px);
-
-border-radius:25px;
-
-padding:25px;
-
-text-align:center;
-
-box-shadow:0 0 25px rgba(255,255,255,.4);
-
-color:white;
-
-animation:zoom 1.5s;
-
-z-index:5;
-
-}
-
-@keyframes zoom{
-
-from{
-
-transform:scale(.4);
-
-opacity:0;
-
-}
-
-to{
-
-transform:scale(1);
-
-opacity:1;
-
-}
-
-}
-
-h1{
-
-font-size:42px;
-
-margin-bottom:10px;
-
-text-shadow:0 0 20px white;
-
-animation:glow 2s infinite alternate;
-
-}
-
-@keyframes glow{
-
-from{
-
-text-shadow:0 0 10px white;
-
-}
-
-to{
-
-text-shadow:0 0 30px white;
-
-}
-
-}
-
-h2{
-
-margin-bottom:20px;
-
-}
-
-#typing{
-
-font-size:18px;
-
-line-height:30px;
-
-min-height:160px;
-
-margin-top:20px;
-
-}
-
-.gallery{
-
-display:flex;
-
-justify-content:center;
-
-flex-wrap:wrap;
-
-gap:12px;
-
-margin:20px 0;
-
-}
-
-.gallery img{
-
-width:180px;
-
-height:180px;
-
-object-fit:cover;
-
-border-radius:18px;
-
-border:4px solid white;
-
-box-shadow:0 0 20px pink;
-
-transition:.4s;
-
-}
-
-.gallery img:hover{
-
-transform:scale(1.08);
-
-}
-
-button{
-
-padding:15px 35px;
-
-font-size:18px;
-
-border:none;
-
-border-radius:40px;
-
-cursor:pointer;
-
-margin:15px;
-
-transition:.4s;
-
-}
-
-#yes{
-
-background:#ff0066;
-
-color:white;
-
-}
-
-#yes:hover{
-
-background:#ff3385;
-
-}
-
-#no{
-
-background:white;
-
-color:#ff0066;
-
-position:relative;
-
-}
-
-#message{
-
-display:none;
-
-margin-top:20px;
-
-font-size:28px;
-
-font-weight:bold;
-
-color:white;
-
-text-shadow:0 0 20px yellow;
-
-}
-
-canvas{
-
-position:fixed;
-
-top:0;
-
-left:0;
-
-pointer-events:none;
-
-}
-
-</style>
-
-</head>
-
-<body>
-
-<canvas id="canvas"></canvas>
-
-<div class="card">
-
-<h1>❤️ I'm Sorry Sneha ❤️</h1>
-
-<h2>Will You Please Forgive Me?</h2>
-
-<div class="gallery">
-
-<!-- Replace these with your own photo filenames -->
-<img src="photo1.jpg">
-<img src="photo2.jpg">
-<img src="photo3.jpg">
-
-</div>
-
-<p id="typing"></p>
-
-<button id="yes" onclick="forgive()">Forgive Me ❤️</button>
-
-<button id="no" onmouseover="moveButton()" ontouchstart="moveButton()">
-
-Not Yet 😒
-
-</button>
-
-<div id="message">
-
-🎉 Thank You Sneha ❤️<br>
-
-You made me the happiest person.<br>
-
-I promise to never hurt you again.
-
-</div>
-
-</div>
-
-<script>
-
-const letter=`Dear Sneha ❤️,
-
-I know I made mistakes.
-
-I never wanted to hurt you.
-
-Every day without your smile feels incomplete.
-
-You're very precious to me.
-
-Please forgive me.
-
-I promise to become a better person and always respect your feelings.
-
-Thank you for being such a beautiful part of my life.
-
-❤️ Forever Yours,
-Ansh ❤️`;
-
-let i=0;
-
-function type(){
-
-if(i<letter.length){
-
-document.getElementById("typing").innerHTML+=letter.charAt(i);
-
-i++;
-
-setTimeout(type,40);
-
-}
-
-}
-
-type();/* ---------- Floating Hearts ---------- */
-
-for(let i=0;i<30;i++){
-
-let h=document.createElement("div");
-
-h.className="heart";
-
-h.innerHTML="❤️";
-
-h.style.left=Math.random()*100+"vw";
-
-h.style.animationDuration=(6+Math.random()*6)+"s";
-
-h.style.fontSize=(15+Math.random()*25)+"px";
-
-document.body.appendChild(h);
-
-}
-
-/* ---------- Rose Petals ---------- */
-
-for(let i=0;i<25;i++){
+for(let j=0;j<25;j++){
 
 let p=document.createElement("div");
 
@@ -407,71 +178,95 @@ p.innerHTML="🌹";
 
 p.style.left=Math.random()*100+"vw";
 
-p.style.animationDuration=(7+Math.random()*8)+"s";
+p.style.fontSize=(18+Math.random()*18)+"px";
+
+p.style.animation=`petals ${6+Math.random()*6}s linear infinite`;
 
 document.body.appendChild(p);
 
 }
 
-/* ---------- Run Away Button ---------- */
+/* -------- Moving Button -------- */
 
 function moveButton(){
 
-let btn=document.getElementById("no");
+let b=document.getElementById("no");
 
-btn.style.position="absolute";
+b.style.position="absolute";
 
-btn.style.left=Math.random()*70+"%";
+b.style.left=Math.random()*70+"%";
 
-btn.style.top=Math.random()*70+"%";
+b.style.top=Math.random()*70+"%";
 
 }
 
-/* ---------- Simple Romantic Tune ---------- */
+/* -------- Music -------- */
 
-let audioContext;
+let ctx;
 
-function playTune(){
+let playing=false;
 
-if(audioContext)return;
+let interval;
 
-audioContext=new(window.AudioContext||window.webkitAudioContext)();
+const melody=[523,659,784,659,587,698,880,698];
 
-const notes=[523,659,784,659,523,494,523,659];
+function toggleMusic(){
 
-let time=audioContext.currentTime;
+if(!ctx){
 
-notes.forEach(freq=>{
+ctx=new(window.AudioContext||window.webkitAudioContext)();
 
-let osc=audioContext.createOscillator();
+}
 
-let gain=audioContext.createGain();
+if(!playing){
+
+let i=0;
+
+interval=setInterval(()=>{
+
+let osc=ctx.createOscillator();
+
+let gain=ctx.createGain();
 
 osc.type="sine";
 
-osc.frequency.value=freq;
+osc.frequency.value=melody[i];
 
-gain.gain.value=0.04;
+gain.gain.value=0.05;
 
 osc.connect(gain);
 
-gain.connect(audioContext.destination);
+gain.connect(ctx.destination);
 
-osc.start(time);
+osc.start();
 
-osc.stop(time+0.35);
+osc.stop(ctx.currentTime+0.35);
 
-time+=0.35;
+i=(i+1)%melody.length;
 
-});
+},400);
+
+speaker.innerHTML="🔈";
+
+playing=true;
+
+}else{
+
+clearInterval(interval);
+
+speaker.innerHTML="🔊";
+
+playing=false;
 
 }
 
-/* ---------- Fireworks ---------- */
+}
+
+/* -------- Fireworks -------- */
 
 const canvas=document.getElementById("canvas");
 
-const ctx=canvas.getContext("2d");
+const c=canvas.getContext("2d");
 
 canvas.width=window.innerWidth;
 
@@ -481,7 +276,7 @@ let particles=[];
 
 function fireworks(){
 
-for(let i=0;i<250;i++){
+for(let i=0;i<220;i++){
 
 particles.push({
 
@@ -507,13 +302,13 @@ animate();
 
 function animate(){
 
-ctx.clearRect(0,0,canvas.width,canvas.height);
+c.clearRect(0,0,canvas.width,canvas.height);
 
 particles.forEach((p,index)=>{
 
-ctx.font="22px Arial";
+c.font="22px Arial";
 
-ctx.fillText(p.emoji,p.x,p.y);
+c.fillText(p.emoji,p.x,p.y);
 
 p.x+=p.vx;
 
@@ -539,19 +334,17 @@ requestAnimationFrame(animate);
 
 }
 
-/* ---------- Forgive Button ---------- */
+/* -------- Forgive -------- */
 
 function forgive(){
 
 document.getElementById("message").style.display="block";
 
-playTune();
-
 fireworks();
 
 }
 
-/* ---------- Resize ---------- */
+/* -------- Resize -------- */
 
 window.onresize=function(){
 
@@ -564,5 +357,4 @@ canvas.height=window.innerHeight;
 </script>
 
 </body>
-
 </html>
